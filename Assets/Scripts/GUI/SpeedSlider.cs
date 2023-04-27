@@ -29,7 +29,8 @@ public class SpeedSlider : MonoBehaviour
 
     private void sliderSpeed()
     {
-        currentSpeed=rb.velocity.magnitude;
+        Vector3 magnitude = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        currentSpeed=magnitude.magnitude;
         speedSlider.value = currentSpeed;
     }
 }
