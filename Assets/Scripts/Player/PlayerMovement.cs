@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         if (moveSpeed > maxSpeed) { moveSpeed = maxSpeed; }*/
         MyInput();
         PlayerSpeedUP();
-        //SpeedControl();
+        SpeedControl();
 
         // handle drag
         if (isGrounded)
@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-            rb.velocity=Vector3.ClampMagnitude(rb.velocity, moveSpeed);
+            //rb.velocity=Vector3.ClampMagnitude(rb.velocity, moveSpeed);
         }
 
         // in air
@@ -146,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
         if (flatVel.magnitude > maxSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * maxSpeed;
-            rb.velocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
