@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpCooldown;
     public float airMultiplier;
     bool isReadyToJump;
+    private float gravityWeight;
+    public float gravityMax;
 
     [HideInInspector] public float walkSpeed;
     [HideInInspector] public float sprintSpeed;
@@ -36,12 +39,11 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        maxSpeed = 100;
-        accelerationSpeed = 20;
         isReadyToJump = true;
     }
 
@@ -51,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
         //increases max speed and decreases it
-        if (Input.GetKey(KeyCode.W))
+        /*if (Input.GetKey(KeyCode.W))
         {
             moveSpeed += accelerationSpeed * Time.deltaTime;
         }
@@ -60,16 +62,25 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed -= accelerationSpeed * 4 * Time.deltaTime;
         }
         if (moveSpeed < 5) { moveSpeed = 5; }
-        if (moveSpeed > maxSpeed) { moveSpeed = maxSpeed; }
-
+        if (moveSpeed > maxSpeed) { moveSpeed = maxSpeed; }*/
         MyInput();
-        SpeedControl();
+        PlayerSpeedUP();
+        //SpeedControl();
 
         // handle drag
         if (isGrounded)
+        {
             rb.drag = groundDrag;
+            gravityWeight = 1;
+        }
+
         else
+        {
             rb.drag = 0;
+            rb.AddForce(-transform.up * gravityWeight, ForceMode.Force); //pulls character down faster
+            gravityWeight++;
+            if (gravityWeight>gravityMax) gravityWeight= gravityMax; //this is a medium pull cap,
+        }
     }
 
     private void FixedUpdate()
@@ -77,10 +88,14 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
+
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        if (isGrounded)
+        {
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
+        }
 
         // when to jump
         if (Input.GetKey(jumpKey) && isReadyToJump && isGrounded)
@@ -93,18 +108,34 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //looks at rigidbody maginitude and increases current running force or decreases it
+    private void PlayerSpeedUP() 
+    {
+        if(rb.velocity.magnitude>=moveSpeed) moveSpeed += accelerationSpeed*Time.deltaTime;
+        else moveSpeed-=accelerationSpeed*8* Time.deltaTime;
+        if(moveSpeed>maxSpeed) moveSpeed = maxSpeed;
+        if(moveSpeed<5) moveSpeed = 5;
+
+    }
     private void MovePlayer()
     {
         // calculate movement direction
+
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         // on ground
         if (isGrounded)
+        {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            rb.velocity=Vector3.ClampMagnitude(rb.velocity, moveSpeed);
+        }
 
         // in air
-        else if (!isGrounded)
+        /*else if (!isGrounded)
+        {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        }*/
+
     }
 
     private void SpeedControl()
@@ -112,10 +143,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         // limit velocity if needed
-        if (flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > maxSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            Vector3 limitedVel = flatVel.normalized * maxSpeed;
+            rb.velocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
         }
     }
 

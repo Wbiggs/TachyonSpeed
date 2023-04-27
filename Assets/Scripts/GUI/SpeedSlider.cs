@@ -11,23 +11,25 @@ public class SpeedSlider : MonoBehaviour
     public GameObject SliderUI;
     public Slider speedSlider;
     public PlayerMovement player;
+    public Rigidbody rb;
+
     // Start is called before the first frame update
     void Start()
     {
         sliderSpeed();
+        maxSpeed = player.maxSpeed;
+        speedSlider.maxValue = maxSpeed;
     }
 
-    // Update is called once per frame
-    void Update()
+    // FixedUpdate is called once per frame
+    void FixedUpdate()
     {
         sliderSpeed();
     }
 
     private void sliderSpeed()
     {
-        currentSpeed=player.moveSpeed;
-        maxSpeed=player.maxSpeed;
-        speedSlider.maxValue= maxSpeed;
+        currentSpeed=rb.velocity.magnitude;
         speedSlider.value = currentSpeed;
     }
 }

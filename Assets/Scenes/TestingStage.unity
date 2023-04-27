@@ -261,6 +261,7 @@ MonoBehaviour:
   SliderUI: {fileID: 146076709}
   speedSlider: {fileID: 146076711}
   player: {fileID: 1510624499}
+  rb: {fileID: 1510624498}
 --- !u!4 &197781430 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5980867433205930078, guid: 6bd8115a036ade542be6cabeb1ba1779, type: 3}
@@ -345,7 +346,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278631656}
-  m_LocalRotation: {x: -0.33100694, y: 0.000000016236429, z: 0.0000000056954317, w: 0.9436283}
+  m_LocalRotation: {x: -0.33100694, y: -0.000000016236429, z: -0.0000000056954317, w: 0.9436283}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2657,7 +2658,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376977392}
-  m_LocalRotation: {x: -0.23454402, y: -0.00000000836321, z: -0.0000000020178272, w: 0.9721055}
+  m_LocalRotation: {x: -0.23454402, y: 0.000000008363208, z: 0.0000000020178266, w: 0.9721055}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2987,6 +2988,7 @@ GameObject:
   - component: {fileID: 1510624495}
   - component: {fileID: 1510624498}
   - component: {fileID: 1510624499}
+  - component: {fileID: 1510624500}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3106,7 +3108,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!114 &1510624499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3119,13 +3121,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6a2a85d3e7958499799761885d1f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 40
-  maxSpeed: 0
-  accelerationSpeed: 0
-  groundDrag: 1
-  jumpForce: 10
+  moveSpeed: 5
+  maxSpeed: 100
+  accelerationSpeed: 8
+  groundDrag: 3
+  jumpForce: 30
   jumpCooldown: 0.25
-  airMultiplier: 5
+  airMultiplier: 1
+  gravityMax: 30
   walkSpeed: 0
   sprintSpeed: 0
   jumpKey: 32
@@ -3133,7 +3136,30 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 1024
+  isGrounded: 0
   orientation: {fileID: 1842456813}
+--- !u!114 &1510624500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510624488}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7521f72e1fcbd4aa3e528fe4009e42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whatIsWall:
+    serializedVersion: 2
+    m_Bits: 0
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 0
+  wallRunForce: 0
+  maxWallRunTime: 0
+  wallCheckDistance: 0
+  minJumpHeight: 0
 --- !u!4 &1522876813 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5980867433205930078, guid: 6bd8115a036ade542be6cabeb1ba1779, type: 3}
