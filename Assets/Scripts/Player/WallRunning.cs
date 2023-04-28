@@ -82,7 +82,7 @@ public class WallRunning : MonoBehaviour
     {
         //pm.wallrunning = true;
     }
-    private void StopWallRun()
+    private void WallRunningMovement()
     {
         rb.useGravity = false;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -91,7 +91,7 @@ public class WallRunning : MonoBehaviour
         rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
     }
 
-    private void WallRunningMovement()
+    private void StopWallRun()
     {
         //pm.wallrunning = false;
     }
