@@ -3131,6 +3131,7 @@ MonoBehaviour:
   gravityMax: 30
   walkSpeed: 0
   sprintSpeed: 0
+  isWallRunning: 0
   jumpKey: 32
   playerHeight: 2
   whatIsGround:
@@ -3145,21 +3146,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510624488}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab7521f72e1fcbd4aa3e528fe4009e42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  whatIsWall:
+  WhatIsWall:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 0
-  wallRunForce: 0
-  maxWallRunTime: 0
-  wallCheckDistance: 0
+    m_Bits: 1024
+  wallRunForce: 20
+  maxWallRunTime: 5
+  wallCheckDistance: 2
   minJumpHeight: 0
+  Orientation: {fileID: 1842456813}
+  pm: {fileID: 1510624499}
+  rb: {fileID: 1510624498}
 --- !u!4 &1522876813 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5980867433205930078, guid: 6bd8115a036ade542be6cabeb1ba1779, type: 3}

@@ -5,7 +5,7 @@ using UnityEngine;
 public class WallRunning : MonoBehaviour
 {
     [Header("Wallrunning")]
-    public LayerMask whatIsWall;
+    public LayerMask WhatIsWall;
     public LayerMask whatIsGround;
     public float wallRunForce;
     public float maxWallRunTime;
@@ -26,9 +26,9 @@ public class WallRunning : MonoBehaviour
     private bool frontWall;
 
     [Header("References")]
-    private Transform Orientation;
-    private PlayerMovement pm;
-    private Rigidbody rb;
+    public Transform Orientation;
+    public PlayerMovement pm;
+    public Rigidbody rb;
 
     private void Start()
     {
@@ -44,6 +44,7 @@ public class WallRunning : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(pm.isWallRunning) WallRunningMovement();
         /*if (pm.wallrunning)
         {
             WallRunningMovement();
@@ -52,7 +53,7 @@ public class WallRunning : MonoBehaviour
 
     private void CheckForWall()
     {
-        frontWall = Physics.Raycast(transform.position, Orientation.forward, out frontWallhit, wallCheckDistance, whatIsWall);
+        frontWall = Physics.Raycast(transform.position, Orientation.forward, out frontWallhit, wallCheckDistance, WhatIsWall);
         //wallRight = Physics.Raycast(transform.position, Orientation.right, out rightwallhit, wallCheckDistance, whatIsWall);
         //wallLeft = Physics.Raycast(transform.position, -Orientation.right, out leftwallhit, wallCheckDistance, whatIsWall);
 
@@ -80,20 +81,25 @@ public class WallRunning : MonoBehaviour
 
     private void StartWallRun()
     {
-        //pm.wallrunning = true;
+        pm.isWallRunning = true;
     }
     private void WallRunningMovement()
     {
-        rb.useGravity = false;
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (verticalInput > 0)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, pm.moveSpeed, rb.velocity.z);
+            rb.useGravity = false;
+        }
+        /*rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         Vector3 wallNormal = frontWallhit.normal;
         Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);*/
     }
 
     private void StopWallRun()
     {
-        //pm.wallrunning = false;
+        pm.isWallRunning = false;
+        rb.useGravity=true;
     }
 
 }

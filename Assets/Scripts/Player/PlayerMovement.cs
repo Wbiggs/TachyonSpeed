@@ -22,6 +22,9 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public float walkSpeed;
     [HideInInspector] public float sprintSpeed;
 
+    [Header("MovementStates")]
+    public bool isWallRunning;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
 
@@ -65,22 +68,27 @@ public class PlayerMovement : MonoBehaviour
         if (moveSpeed > maxSpeed) { moveSpeed = maxSpeed; }*/
         MyInput();
         PlayerSpeedUP();
-        SpeedControl();
+        
 
         // handle drag
         if (isGrounded)
         {
+            SpeedControl();
             rb.drag = groundDrag;
             gravityWeight = 1;
-        }
 
-        else
+        }
+        else //if(!isGrounded && !wallRunning) 
         {
             rb.drag = 0;
             rb.AddForce(-transform.up * gravityWeight, ForceMode.Force); //pulls character down faster
             gravityWeight++;
             if (gravityWeight>gravityMax) gravityWeight= gravityMax; //this is a medium pull cap,
         }
+        /*else if (!isGrounded && wallRunning) 
+        {
+
+        }*/
     }
 
     private void FixedUpdate()
@@ -149,6 +157,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
+   
 
     private void Jump()
     {
