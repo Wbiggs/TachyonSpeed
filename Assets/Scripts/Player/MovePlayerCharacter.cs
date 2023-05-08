@@ -90,7 +90,7 @@ public class MovePlayerCharacter : MonoBehaviour
 
     private void MovePlayer()
     {
-        Vector3 moveDirection = (transform.forward * verticalInput + transform.right * horizontalInput).normalized;
+        Vector3 moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
         rb.AddForce(moveDirection.normalized * moveSpeed*10f, ForceMode.Force);
         RotateSelf();
         //rb.AddForce(wall.position - transform.position, ForceMode.Force);
@@ -149,19 +149,27 @@ public class MovePlayerCharacter : MonoBehaviour
             HitDir += HitBack.normal;
         }
 
-        //Debug.DrawLine(transform.position, transform.position + (HitDir.normalized * 5f), Color.red);
+        Debug.DrawLine(transform.position, transform.position + (HitDir.normalized * 5f), Color.red,5f);
+
 
         return HitDir.normalized;
     }
 
     private void wallDetect(LayerMask beneathFeet)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectRadius, beneathFeet);
-        Debug.Log(hitColliders[0]);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, playerHeight * .5f + .3f, beneathFeet);
+        //Debug.Log(hitColliders[0]);
         if (hitColliders.Length > 0)
         {
             wall = hitColliders[0].transform;
         }
+        /*int items = 0;
+        foreach(Collider hit in hitColliders) 
+        {
+            Debug.Log(items+" "+hit);
+            items++;
+        }
+        Debug.Log(hitColliders.Length);*/
     }
 }
 
