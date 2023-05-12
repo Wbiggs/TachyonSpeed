@@ -10,7 +10,7 @@ public class SpeedSlider : MonoBehaviour
 
     public GameObject SliderUI;
     public Slider speedSlider;
-    public PlayerMovement player;
+    public MovePlayerCharacter player;
     public Rigidbody rb;
 
     // Start is called before the first frame update
