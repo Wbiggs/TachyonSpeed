@@ -119,7 +119,9 @@ public class MovePlayerCharacter : MonoBehaviour
             state = PlayerState.OnWall;
             wallDetect(WhatIsWall);
             //Vector3 pullForce= new Vector3(wall.position.x-transform.position.x, rb.transform.position.y, wall.position.z - transform.position.z);
-            rb.AddForce((wall.position - transform.position) * moveSpeed, ForceMode.Force); //pulls toward wall object
+            //rb.AddForce((wall.position - transform.position) * moveSpeed, ForceMode.Force); //pulls toward wall object
+            Vector3 wallposition = new Vector3(wall.position.x * 10, rb.position.y, wall.position.z);
+            rb.AddRelativeForce(wallposition*10,ForceMode.Force);
             Debug.Log("wall");
         }
         else
