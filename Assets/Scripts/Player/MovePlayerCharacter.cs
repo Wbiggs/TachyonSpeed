@@ -95,7 +95,7 @@ public class MovePlayerCharacter : MonoBehaviour
 
         Collider[] wallWalking = Physics.OverlapSphere(inFrontOfPlayer, 2, WhatIsWall);
         //if wall detected, make it true
-        if (wallWalking.Length > 0)
+        if (wallWalking.Length > 0 && moveSpeed>20)
         {
             isOnWall = true;
         }
@@ -118,13 +118,16 @@ public class MovePlayerCharacter : MonoBehaviour
             //Debug.Log("hold to wall " + newMoveSpeed);
             state = PlayerState.OnWall;
             wallDetect(WhatIsWall);
-            //Vector3 pullForce= new Vector3(wall.position.x-transform.position.x, rb.transform.position.y, wall.position.z - transform.position.z);
-            rb.AddForce((wall.position - transform.position) * moveSpeed, ForceMode.Force); //pulls toward wall object
+            Vector3 pullForce= new Vector3(wall.position.x-transform.position.x, transform.position.y, wall.position.z - transform.position.z);
+            rb.AddForce(pullForce*moveSpeed,ForceMode.Force);
+            rb.AddForce(-orientation.up * (moveSpeed * 5), ForceMode.Force); ///////////////
+            //rb.AddForce((wall.position - transform.position) * moveSpeed, ForceMode.Force); //pulls toward wall object
             Debug.Log("wall");
         }
         else
         {
             state = PlayerState.InAir;
+            rb.AddForce(-orientation.up * (moveSpeed * 5), ForceMode.Force); ////////////
             Debug.Log("air");
         }
     }
