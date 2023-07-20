@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MovePlayerCharacter : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class MovePlayerCharacter : MonoBehaviour
     public float gravityRotationSpeed = 20f;
     public float detectRadius = 2;
     public float playerHeight;
+
+    private int grav; //--//
+    private Vector3 moveDirection,groundDir;
 
     private float horizontalInput;
     private float verticalInput;
@@ -92,6 +96,7 @@ public class MovePlayerCharacter : MonoBehaviour
     {
         //WORKING ON THIS/////////////// casting a tetection sphere in front of player also OnDrawGizmosSelected
         Vector3 inFrontOfPlayer = new Vector3(player.position.x, player.position.y, player.position.z + 1.1f);
+        rb.AddForce(-orientation.up * 50, ForceMode.Force); ////////////
 
         Collider[] wallWalking = Physics.OverlapSphere(inFrontOfPlayer, 2, WhatIsWall);
         //if wall detected, make it true
@@ -100,13 +105,13 @@ public class MovePlayerCharacter : MonoBehaviour
             isOnWall = true;
         }
         else isOnWall = false;
-
+                
         if (isOnGround && !isOnWall)
         {
             state = PlayerState.Grounded;
             wallDetect(WhatIsGround);
             //Debug.Log("grounded");
-
+            grav = 10;
         }
         else if (isOnWall)
         {
@@ -119,16 +124,18 @@ public class MovePlayerCharacter : MonoBehaviour
             state = PlayerState.OnWall;
             wallDetect(WhatIsWall);
             Vector3 pullForce= new Vector3(wall.position.x-transform.position.x, transform.position.y, wall.position.z - transform.position.z);
-            rb.AddForce(pullForce*moveSpeed,ForceMode.Force);
+            /*rb.AddForce(pullForce*moveSpeed,ForceMode.Force);
             rb.AddForce(-orientation.up * (moveSpeed * 5), ForceMode.Force); ///////////////
             //rb.AddForce((wall.position - transform.position) * moveSpeed, ForceMode.Force); //pulls toward wall object
-            Debug.Log("wall");
+            Debug.Log("wall");*/
         }
         else
         {
             state = PlayerState.InAir;
-            rb.AddForce(-orientation.up * (moveSpeed * 5), ForceMode.Force); ////////////
+            rb.AddForce(-orientation.up * (grav * 5), ForceMode.Force); ////////////
+            grav += 10;
             Debug.Log("air");
+            Debug.Log("gravity "+grav);
         }
     }
 
@@ -152,18 +159,27 @@ public class MovePlayerCharacter : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (state == PlayerState.Grounded)
+        if (horizontalInput != 0 || verticalInput != 0)
         {
-            Vector3 moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-            //rb.velocity= moveDirection.normalized*moveSpeed*3f;
-        }
-        else 
-        {
-            Vector3 moveDirection = (transform.forward * verticalInput + transform.right * horizontalInput).normalized;
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-            //rb.velocity = moveDirection.normalized * moveSpeed * 3f;
+            Vector3 SetGroundDir = FloorAngleCheck();
+            groundDir = Vector3.Lerp(groundDir, SetGroundDir, Time.deltaTime * 10f);
+            Vector3 curVelocity = rb.velocity;
+            //Vector3 moveDirection;
+            if (state == PlayerState.Grounded)
+            {
+                moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
+                //rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            }
+            else
+            {
+                moveDirection = (transform.forward * verticalInput + transform.right * horizontalInput).normalized;
+                //rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
+            }
+            Vector3 targetVelocity = moveDirection*moveSpeed;
+            targetVelocity -= groundDir * gravity;
+            Vector3 dir= Vector3.Lerp(curVelocity, targetVelocity, Time.deltaTime*moveSpeed);
+            rb.velocity = dir;//moveDirection.normalized * moveSpeed * 3f;
         }
         //RotateSelf();
         //rb.AddForce(wall.position - transform.position, ForceMode.Force);
